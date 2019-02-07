@@ -1,0 +1,19 @@
+{
+  "name": "phaser3-tutorial-src",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sminutoli/phaser-testing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sminutoli/phaser-testing/issues"
+  },
+  "homepage": "https://github.com/sminutoli/phaser-testing#readme"
+}
