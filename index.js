@@ -81,11 +81,25 @@ function create() {
   this.crearEstrella(80, 605);
   this.crearEstrella(130, 605);
 
-  this.add.image(271, 327, 'malo').setScale(2.2);
-  this.add.image(80, 482, 'malo').setScale(2.2);
-  this.add.image(112, 603, 'malo').setScale(2.2);
+  this.crearEnemigo = crearEnemigo;
+  this.crearEnemigo(271, 327);
+  this.crearEnemigo(80, 482);
+  this.crearEnemigo(112, 603);
   
   teclas = this.input.keyboard.createCursorKeys();
+}
+
+function crearEnemigo(x, y) {
+  var malo = this.add.image(x + 40, y, 'malo');
+  malo.scaleX = malo.scaleY = 2.2;
+  this.tweens.add({
+    targets: malo,
+    props: {
+      x: { value: x - 40, duration: 3000 }
+    },
+    yoyo: true,
+    repeat: -1
+  });
 }
 
 function crearEstrella(x, y){
