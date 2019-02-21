@@ -63,7 +63,14 @@ function create() {
 
   this.add.image(182, 640, 'piso');
 
-  this.add.image(300, 80, 'trofeo').setScale(0.5);
+  var emitter = this.add.particles('trofeo').createEmitter({
+      x: 300,
+      y: 80,
+      blendMode: 'OVERLAY',
+      scale: { start: 0.5, end: 0 },
+      speed: { min: -50, max: 50 },
+      quantity: 20
+  });
 
   this.add.image(40, 170, 'estrella');
   this.add.image(260, 320, 'estrella');
