@@ -98,7 +98,8 @@ function crearEnemigo(x, y) {
       x: { value: x - 40, duration: 3000 }
     },
     yoyo: true,
-    repeat: -1
+    repeat: -1,
+    delay: Math.random() * 2000
   });
 }
 
