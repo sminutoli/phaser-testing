@@ -7,7 +7,7 @@ const config = {
     create,
     update
   },
-  pixelArt: true
+  pixelArt: true,
 };
 
 function preload() {
@@ -72,19 +72,34 @@ function create() {
       quantity: 20
   });
 
-  this.add.image(40, 170, 'estrella');
-  this.add.image(260, 320, 'estrella');
-  this.add.image(310, 320, 'estrella');
-  this.add.image(30, 475, 'estrella');
-  this.add.image(80, 475, 'estrella');
-  this.add.image(80, 605, 'estrella');
-  this.add.image(130, 605, 'estrella');
+  this.crearEstrella = crearEstrella;
+  this.crearEstrella(40, 170);
+  this.crearEstrella(260, 320);
+  this.crearEstrella(310, 320);
+  this.crearEstrella(30, 475);
+  this.crearEstrella(80, 475);
+  this.crearEstrella(80, 605);
+  this.crearEstrella(130, 605);
 
   this.add.image(271, 327, 'malo').setScale(2.2);
   this.add.image(80, 482, 'malo').setScale(2.2);
   this.add.image(112, 603, 'malo').setScale(2.2);
   
   teclas = this.input.keyboard.createCursorKeys();
+}
+
+function crearEstrella(x, y){
+  var estrella = this.add.image(x, y, 'estrella');
+  this.tweens.add({
+      targets: estrella,
+      props: {
+          scaleX: { value: 0.90, duration: 300 },
+          scaleY: { value: 0.90, duration: 300 },
+      },
+      ease: 'Sine.easeOut',
+      yoyo: true,
+      repeat: -1
+  });
 }
 
 function update() {
