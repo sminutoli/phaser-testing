@@ -3,8 +3,9 @@ const config = {
   width: 360,
   height: 640,
   scene: {
+    preload,
     create,
-    preload
+    update
   },
   pixelArt: true,
 };
@@ -20,6 +21,9 @@ function preload() {
   this.load.image('personaje', 'assets/personaje.png');
 }
 
+var teclas;
+var personaje;
+
 function create() {
   var fondoArriba = 0x8787FF;
   var fondoAbajo = 0xFFFFFF;
@@ -30,7 +34,7 @@ function create() {
   fondo.fillGradientStyle(fondoArriba, fondoArriba, fondoAbajo, fondoAbajo, 1, 1);
   fondo.fillRect(0, 0, config.width, config.height);
 
-  this.add.image(255, 605, 'personaje');
+  personaje = this.add.image(255, 605, 'personaje');
 
   this.add.image(290, 355, 'plataforma');
   this.add.image(293, 131, 'plataforma2');
@@ -53,6 +57,18 @@ function create() {
   this.add.image(271, 327, 'malo').setScale(2.2);
   this.add.image(80, 482, 'malo').setScale(2.2);
   this.add.image(112, 603, 'malo').setScale(2.2);
+  
+  teclas = this.input.keyboard.createCursorKeys();
+}
+
+function update() {
+  if (teclas.left.isDown) {
+    personaje.x -= 2;
+    
+  } else if (teclas.right.isDown) {
+    personaje.x += 2;
+    
+  };
 }
 
 new Phaser.Game(config);
