@@ -62,12 +62,15 @@ function create() {
 }
 
 function update() {
+  const velocidad = 2;
+  
   if (teclas.left.isDown) {
-    personaje.x -= 2;
-    
+    personaje.x -= velocidad;
+    personaje.scaleX = 1;
+
   } else if (teclas.right.isDown) {
-    personaje.x += 2;
-    
+    personaje.x += velocidad;
+    personaje.scaleX = -1;
   };
 }
 
