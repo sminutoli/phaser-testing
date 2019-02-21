@@ -72,6 +72,12 @@ function update() {
     personaje.x += velocidad;
     personaje.scaleX = -1;
   };
+  
+  if(personaje.x < -50){
+    personaje.x = 390;
+  } else if(personaje.x > 400){
+    personaje.x = -40;
+  }
 }
 
 new Phaser.Game(config);
