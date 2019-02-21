@@ -7,7 +7,7 @@ const config = {
     create,
     update
   },
-  pixelArt: true,
+  pixelArt: true
 };
 
 function preload() {
@@ -18,7 +18,7 @@ function preload() {
   this.load.image('estrella', 'assets/estrella.png');
   this.load.image('trofeo', 'assets/trofeo.png');
   this.load.image('malo', 'assets/malo.png');
-  this.load.image('personaje', 'assets/personaje.png');
+  this.load.spritesheet('personajeAnimado', 'assets/personajeAnimado.png', { frameWidth: 16, frameHeight: 16 });
 }
 
 var teclas;
@@ -34,7 +34,26 @@ function create() {
   fondo.fillGradientStyle(fondoArriba, fondoArriba, fondoAbajo, fondoAbajo, 1, 1);
   fondo.fillRect(0, 0, config.width, config.height);
 
-  personaje = this.add.image(255, 605, 'personaje');
+  personaje = this.add.sprite(255, 605, 'personajeAnimado').setScale(3);
+  this.anims.create({
+      key: 'left',
+      frames: this.anims.generateFrameNumbers('personajeAnimado', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+  });
+
+  this.anims.create({
+      key: 'turn',
+      frames: [ { key: 'personajeAnimado', frame: 4 } ],
+      frameRate: 20
+  });
+
+  this.anims.create({
+      key: 'right',
+      frames: this.anims.generateFrameNumbers('personajeAnimado', { start: 5, end: 8 }),
+      frameRate: 10,
+      repeat: -1
+  });
 
   this.add.image(290, 355, 'plataforma');
   this.add.image(293, 131, 'plataforma2');
@@ -66,11 +85,13 @@ function update() {
   
   if (teclas.left.isDown) {
     personaje.x -= velocidad;
-    personaje.scaleX = 1;
+    personaje.anims.play('left', true);
 
   } else if (teclas.right.isDown) {
     personaje.x += velocidad;
-    personaje.scaleX = -1;
+    personaje.anims.play('right', true);
+  } else {
+    personaje.anims.play('turn');
   };
   
   if(personaje.x < -50){
