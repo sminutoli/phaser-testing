@@ -90,6 +90,8 @@ function inicializarJuego() {
   
   premios = this.physics.add.group();  
   premios.create(40, 160, 'premio');
+  premios.create(240, 320, 'premio');
+  premios.create(50, 400, 'premio');
   this.physics.add.collider(premios, plataformas);
   
   /********** FIN DE CREACION DE PREMIOS *************/
@@ -98,6 +100,8 @@ function inicializarJuego() {
   
   enemigos = this.physics.add.group(); 
   enemigos.create(271, 327, 'enemigo').setScale(2.2);
+  enemigos.create(90, 400, 'enemigo').setScale(2.2);
+  enemigos.create(40, 600, 'enemigo').setScale(2.2);
   this.physics.add.collider(enemigos, plataformas);
   
   /********** FIN DE CREACION DE ENEMIGOS *************/
