@@ -14,7 +14,8 @@ var config = {
   */
   scene: {
     preload: cargarAntesDeEmpezar,
-    create: inicializarJuego
+    create: inicializarJuego,
+    update: refrescarJuego
   },
   pixelArt: true,
 };
@@ -26,6 +27,7 @@ var trofeo;
 var enemigos;
 var premios;
 var personaje;
+var teclas;
 
 /********** FIN DE VARIABLES *************/
 
@@ -112,6 +114,18 @@ function inicializarJuego() {
   this.physics.add.collider(personaje, plataformas);
   
   /********** FIN DE CREACION DE PERSONAJE *************/
+  
+  teclas = this.input.keyboard.createCursorKeys();
+}
+
+function refrescarJuego() {
+  if (teclas.left.isDown) {
+      personaje.x -= 2;
+  } else if (teclas.right.isDown) {
+      personaje.x += 2;
+  } else if (teclas.space.isDown) {
+      personaje.y -= 5;
+  }
   
 }
 
