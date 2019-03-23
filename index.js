@@ -28,6 +28,9 @@ var enemigos;
 var premios;
 var personaje;
 var teclas;
+var juegoTerminado = false;
+var puntos = 0;
+var puntaje = [];
 
 /********** FIN DE VARIABLES *************/
 
@@ -44,7 +47,11 @@ function cargarAntesDeEmpezar() {
   this.load.image('premio', 'assets/estrella.png');
   this.load.image('trofeo', 'assets/trofeo.png');
   this.load.image('enemigo', 'assets/malo.png');
-  this.load.image('personaje', 'assets/personaje.png');
+  this.load.spritesheet('personajeAnimado', 'assets/personaje.spritesheet.png', {
+    frameWidth: 16,
+    frameHeight: 16
+  });
+  this.load.image('comenzar', 'assets/comienzo.png');
 }
 
 /*
@@ -76,7 +83,7 @@ function inicializarJuego() {
   plataformas.create(73, 207,  'plataforma2');
   plataformas.create(180, 425, 'plataforma4');
   plataformas.create(68, 512, 'plataforma2');
-  plataformas.create(182, 630, 'piso');
+  var piso = plataformas.create(182, 630, 'piso');
   
   /********** FIN DE CREACION DE PLATAFORMAS *************/
   
@@ -91,9 +98,9 @@ function inicializarJuego() {
   /********** CREACION DE PREMIOS *************/
   
   premios = this.physics.add.group();  
-  premios.create(40, 160, 'premio');
-  premios.create(240, 320, 'premio');
-  premios.create(50, 400, 'premio');
+  premios.create(40, 150, 'premio').setBounce(1);
+  premios.create(240, 300, 'premio').setBounce(1);
+  premios.create(50, 450, 'premio').setBounce(1);
   this.physics.add.collider(premios, plataformas);
   
   /********** FIN DE CREACION DE PREMIOS *************/
@@ -101,30 +108,154 @@ function inicializarJuego() {
   /********** CREACION DE ENEMIGOS *************/
   
   enemigos = this.physics.add.group(); 
-  enemigos.create(271, 327, 'enemigo').setScale(2.2);
-  enemigos.create(90, 400, 'enemigo').setScale(2.2);
-  enemigos.create(40, 600, 'enemigo').setScale(2.2);
+  
+  var enemigo1 = enemigos.create(271, 327, 'enemigo').setScale(2.2);
+  
+  var enemigo2 = enemigos.create(90, 170, 'enemigo').setScale(2.2);
+  
+  var enemigo3 = enemigos.create(180, 600, 'enemigo').setScale(2.2);
+  
+  var enemigo4 = enemigos.create(90, 170, 'enemigo').setScale(2.2);
+  
   this.physics.add.collider(enemigos, plataformas);
+  
+  this.tweens.add({
+    targets: enemigo1,
+    props: {
+      x: { value: enemigo1.x - 80, duration: 3000 }
+    },
+    yoyo: true,
+    repeat: -1
+  });
+  
+  this.tweens.add({
+    targets: enemigo2,
+    props: {
+      x: { value: enemigo2.x + 100, duration: 2000 }
+    },
+    yoyo: true,
+    repeat: -1
+  });
+  
+  this.tweens.add({
+    targets: enemigo3,
+    props: {
+      x: { value: enemigo3.x - 100, duration: 2000 }
+    },
+    yoyo: true,
+    repeat: -1
+  });
+  
+  this.tweens.add({
+    targets: enemigo4,
+    props: {
+      x: { value: enemigo4.x - 40, duration: 1500 }
+    },
+    yoyo: true,
+    repeat: -1
+  });
   
   /********** FIN DE CREACION DE ENEMIGOS *************/
   
+  this.anims.create({
+      key: 'izquierda',
+      frames: this.anims.generateFrameNumbers('personajeAnimado', { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+  });
+
+  this.anims.create({
+      key: 'quieto',
+      frames: [ { key: 'personajeAnimado', frame: 4 } ],
+      frameRate: 20
+  });
+
+  this.anims.create({
+      key: 'derecha',
+      frames: this.anims.generateFrameNumbers('personajeAnimado', { start: 5, end: 8 }),
+      frameRate: 10,
+      repeat: -1
+  });
+  
   /********** CREACION DE PERSONAJE *************/
   
-  personaje = this.physics.add.image(255, 500, 'personaje');
+  personaje = this.physics.add.sprite(255, 500, 'personajeAnimado').setScale(3).setBounce(0.2);
   this.physics.add.collider(personaje, plataformas);
   
   /********** FIN DE CREACION DE PERSONAJE *************/
   
   teclas = this.input.keyboard.createCursorKeys();
+  
+  /***** COLISIONES *****/
+  this.physics.add.overlap(personaje, premios, agarrarPremio, null, this);
+  this.physics.add.overlap(personaje, trofeo, ganarJuego, null, this);
+  this.physics.add.overlap(personaje, enemigos, tocarEnemigo, null, this);
+  
+  /***** PUNTAJE *****/
+  puntaje[1] = this.add.image(20, 20, 'premio').setScale(0.5);
+  puntaje[2] = this.add.image(50, 20, 'premio').setScale(0.5);
+  puntaje[3] = this.add.image(80, 20, 'premio').setScale(0.5);
+  reiniciarJuego();
+  
+  /***** PANTALLA COMIENZO *****/
+  var boton = this.add.image(180, 320, 'comenzar').setInteractive();
+  boton.on('pointerdown', () => boton.destroy());
+}
+
+function agarrarPremio(personaje, premioQueToco) {
+  premioQueToco.disableBody(true, true);
+  puntos++;
+  puntaje[puntos].setAlpha(1);
+}
+
+function tocarEnemigo(personaje, enemigoQueToco) {
+  //this.physics.pause();
+  personaje.setTint(0xff0000);
+  terminarJuego();
+  setTimeout(() => {
+    this.scene.restart()
+  }, 3000);
+}
+
+function ganarJuego(personaje, trofeo) {
+  trofeo.disableBody(true, true);
+  personaje.setBounce(1);
+  personaje.setVelocityY(-100);
+  terminarJuego();
+  setTimeout(() => {
+    this.scene.restart()
+  }, 3000);
+}
+
+function reiniciarJuego() {
+  puntos = 0;
+  puntaje[1].setAlpha(0.5);
+  puntaje[2].setAlpha(0.5);
+  puntaje[3].setAlpha(0.5);
+  juegoTerminado = false;
+}
+
+function terminarJuego() {
+  personaje.setVelocityX(0);
+  personaje.anims.play('quieto');
+  juegoTerminado = true;
 }
 
 function refrescarJuego() {
+  
+  if(juegoTerminado) return;
+  
   if (teclas.left.isDown) {
-      personaje.x -= 2;
+      personaje.setVelocityX(-160);
+      personaje.anims.play('izquierda', true);
   } else if (teclas.right.isDown) {
-      personaje.x += 2;
-  } else if (teclas.space.isDown) {
-      personaje.y -= 5;
+      personaje.setVelocityX(+160);
+      personaje.anims.play('derecha', true);
+  } else if (teclas.space.isDown && personaje.body.touching.down) {
+      personaje.setVelocityY(-330);
+  } else {
+      personaje.setVelocityX(0);
+      personaje.anims.play('quieto');
   }
   
 }
